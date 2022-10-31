@@ -24,7 +24,8 @@ def encrypt_text(message: str, rotation_amount: int) -> str:
     # If the character is less than 48, it is replaced by the "~"
     for index, char in enumerate(char_list):
         if char_rotation(char, rotation_amount) < 48:
-            char_list[index] = 126
+            char_list[index] = char_rotation(char, rotation_amount)
+            char_list.append(126)
         else:
             char_list[index] = char_rotation(char, rotation_amount)
     
