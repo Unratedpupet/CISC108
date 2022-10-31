@@ -1,0 +1,92 @@
+"""
+Define the function high_score that consumes a list of integers (representing scores in a game)
+and produces an integer representing the highest score in the list. Ignore scores less than 100,
+and stop processing values if you encounter -999. If the list is empty, return the value None instead.
+It is up to you to decompose this function (or not) however you want.
+"""
+
+from bakery import assert_equal
+
+
+def find_high_score(scores: [int]) -> int:
+    """
+    This function determines the highest score using the maximum for loop plan.
+
+    Args:
+        scores [int]: This is the list of highest scores
+
+    Returns:
+        int: Returns the highest score based on the maximum for loop plan.
+    """
+    max_score = scores[0]
+
+    for score in scores:
+        if max_score < score:
+            max_score = score
+
+    return max_score
+
+
+assert_equal(find_high_score([90, 100, 101]), 101)
+
+
+def more_than_hundy(scores: [int]) -> [int]:
+    """
+    This function takes in a list of scores and checks to make sure they are all at least 100, if not
+        it does not add them to the list.
+    Args:
+        scores [int]: This takes in a list of high scores.
+
+    Returns:
+        [int]: Returns a list of high scores that are all at least 100.
+    """
+    high_scores = []
+    for score in scores:
+        if score >= 100:
+            high_scores.append(score)
+    return high_scores
+
+
+assert_equal(more_than_hundy([99, 100, 101]), [100, 101])
+assert_equal(more_than_hundy([90, 20, 10]), [])
+assert_equal(more_than_hundy([90, 101, 9001]), [101, 9001])
+
+
+def high_score(scores: [int]) -> int:
+    """
+    This function takes in a list of integers/scores. An empty list is initialized. If the initial list is empty
+        the function return None, if not, it add scores to the empty list until -999 is reached or the end of the
+        list is reached. It will then check to make sure the new list isn't empty.
+        It will then use the helper function to determine the highest score.
+
+    Args:
+        scores [int]: This takes in the list of scores
+
+    Returns:
+        None: returns None if either lists are empty.
+        int: returns the highest score from the provided list.
+    """
+    max_scores = []
+
+    if not scores:
+        return None
+
+    for score in scores:
+        if score != -999:
+            max_scores.append(score)
+        else:
+            break
+
+    max_scores = more_than_hundy(max_scores)
+
+    if not max_scores:
+        return None
+
+    return find_high_score(max_scores)
+
+
+assert_equal(high_score([99, 100, 101]), 101)
+assert_equal(high_score([99, 9001, 101]), 9001)
+assert_equal(high_score([9001, 10, 101]), 9001)
+assert_equal(high_score([]), None)
+assert_equal(high_score([-999, 100, 99]), None)

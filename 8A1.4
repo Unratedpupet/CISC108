@@ -1,0 +1,19 @@
+from dataclasses import dataclass
+
+@dataclass
+class Location:
+    city: str
+    state: str
+
+@dataclass
+class Trip:
+    origin: Location
+    destination: Location
+    duration: int
+    
+my_trip = Trip(Location("Newark", "DE"),
+               Location("Baltimore", "MD"),
+               90)
+               
+
+print(my_trip.origin.city[0])
