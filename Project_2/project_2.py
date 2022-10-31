@@ -69,9 +69,11 @@ def decrypt_text(message: str, rotation_amount: int) -> str:
         char_list.append(ord(char))
 
     # Filters through the list and removes any char with value of 126
-    for index, char in enumerate(char_list):
-        if char == 126:
-            char_list.pop(index)
+    filtered_list = []
+    for char in char_list:
+        if char != 126:
+            filtered_list.append(char)
+    char_list = filtered_list
 
     # Using the helper function(char_rotation), iterates through the list and rotates the character number.
     for index, char in enumerate(char_list):
