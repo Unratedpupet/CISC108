@@ -85,7 +85,18 @@ def decrypt_text(message: str, rotation_amount: int) -> str:
     decrypted_message = ""
     return decrypted_message.join(char_list)
 
-#assert_equal(char_rotation(46, 1), 47) 
 
-print(encrypt_text("hello", -55))
-print(decrypt_text("1~558", 55))
+# char_rotation unit tests
+assert_equal(char_rotation(46, 1), 47)
+assert_equal(char_rotation(46, 10), 56)
+assert_equal(char_rotation(46, -10), 36)
+
+# encrypt_text unit tests
+assert_equal(encrypt_text("hello", -55), "1~558")
+assert_equal(encrypt_text("hello", 10), "rovvy")
+assert_equal(encrypt_text("hello", 20), "|y~~~")
+
+# decrypt_text unit tests
+assert_equal(decrypt_text("1~558", 55), "hllo")
+assert_equal(decrypt_text("rovvy", -10), "hello")
+assert_equal(decrypt_text("|y~~~", -20), "he")
