@@ -52,7 +52,14 @@ def char_rotation(char: int, rotation_amount: int) -> int:
     return (char + rotation_amount - PRINTABLE_OFFSET) % PRINTABLES_LENGTH + PRINTABLE_OFFSET
 
 
-
+def decrypt_text(message: str, rotation_amount: int) -> str:
+    '''
+    1. Convert string to list of ints using ord()
+    2. filter list to remove any occurance of value 126
+    3. Rotate integers by rotation_amount
+    4. Convert list of ints back to string using chr()
+    '''
+    pass
 
 
 
