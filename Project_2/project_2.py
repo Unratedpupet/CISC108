@@ -54,15 +54,38 @@ def char_rotation(char: int, rotation_amount: int) -> int:
 
 def decrypt_text(message: str, rotation_amount: int) -> str:
     '''
-    1. Convert string to list of ints using ord()
-    2. filter list to remove any occurance of value 126
-    3. Rotate integers by rotation_amount
-    4. Convert list of ints back to string using chr()
+    This function takes in a message and a rotation amount and converts it into an decrypted message using a Ceaser Cypher.
+    
+    Args:
+        message (str): The message to be decrypted.
+    
+    Return:
+        str: The decrypted message
     '''
-    pass
 
+    # Places each character in the string into a list converted using ord().
+    char_list = []
+    for char in message:
+        char_list.append(ord(char))
 
+    # Filters through the list and removes any char with value of 126
+    for index, char in enumerate(char_list):
+        if char == 126:
+            char_list.pop(index)
+
+    # Using the helper function(char_rotation), iterates through the list and rotates the character number.
+    for index, char in enumerate(char_list):
+        char_list[index] = char_rotation(char, rotation_amount)
+    
+    # Iterates through the finalized list and converts back to strings.
+    for index, char in enumerate(char_list):
+        char_list[index] = chr(char)
+
+    # Returns the decrypted string
+    decrypted_message = ""
+    return decrypted_message.join(char_list)
 
 #assert_equal(char_rotation(46, 1), 47) 
 
 print(encrypt_text("hello", -55))
+print(decrypt_text("1~558", 55))
