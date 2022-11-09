@@ -1,5 +1,8 @@
 from bakery_canvas import get_courses
 from bakery import assert_equal
+import sys
+
+user_token = sys.argv[1]
 
 
 def count_courses(user_token: str) -> int:
