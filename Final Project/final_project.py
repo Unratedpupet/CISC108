@@ -102,7 +102,6 @@ def render_courses(user_token: str) -> str:
 
 annie_courses = "679554: MATH101\n386814: ENGL101\n4182: SPAN101\n394382: ICRM304\n100167: CISC1\n134088: PHED201\n"
 
-
 jeff_courses = "679554: MATH101\n386814: ENGL101\n4182: SPAN101\n394382: ICRM304\n100167: CISC1\n134088: PHED201\n"
 
 pierce_courses = ""
@@ -113,3 +112,49 @@ assert_equal(render_courses("annie"), annie_courses)
 assert_equal(render_courses("jeff"), jeff_courses)
 assert_equal(render_courses("pierce"), pierce_courses)
 assert_equal(render_courses("troy"), troy_courses)
+
+
+def execute(command: str, user_token: str, course_id: int) -> int:
+    """
+
+    Args:
+        command (str): The command that is inputted to choose what to do.
+        user_token (str): The user that is being requested.
+        course_id (int): The course ID
+
+    Returns:
+        int: The new course ID or the course ID that was passed in.
+    """
+    # Prints out the courses being taken by the user currently.
+    print(render_courses(user_token))
+
+    if command == "course":
+        course_id = int(input("Please input a course ID: "))
+        print(find_course(user_token, course_id))
+        return course_id
+    elif command == "exit":
+        return 0
+    else:
+        return course_id
+
+
+def main(user_token: str):
+    """
+    The main function that runs the commands
+    Args:
+        user_token (str): The user id of the user looking for data.
+
+    Returns:
+        None
+    """
+    if count_courses(user_token) == 0:
+        print("No courses available")
+
+    current_course_id = find_cs1(user_token)
+    if current_course_id == 0:
+        current_course_id = 1
+
+    while current_course_id > 0:
+        user_command = input("What would you like to do?\ncourse\nexit\nChoose: ")
+        current_course_id = execute(user_command, user_token, current_course_id)
+
