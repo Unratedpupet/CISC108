@@ -1,4 +1,4 @@
-from bakery_canvas import get_courses
+from bakery_canvas import get_courses, get_submissions
 from bakery import assert_equal
 import sys
 
@@ -160,4 +160,146 @@ def main(user_token: str):
     while current_course_id > 0:
         user_command = input("What would you like to do?\ncourse\nexit\nChoose: ")
         current_course_id = execute(user_command, user_token, current_course_id)
+
+
+def total_points(user_token: str, course_id: int) -> int:
+    """
+    The function gets the total number of points possible for the course
+
+    Args:
+        user_token (str): The user token of the user in question
+        course_id (int): The course ID
+
+    Returns:
+        int: The total points possible for the course.
+    """
+    submissions = get_submissions(user_token, course_id)
+    possible_points = 0
+    for submission in submissions:
+        possible_points += submission.assignment.points_possible
+    return possible_points
+
+
+assert_equal(total_points("annie", 679554), 420)
+assert_equal(total_points("annie", 386814), 700)
+assert_equal(total_points("annie", 100167), 1060)
+assert_equal(total_points("jeff", 679554), 420)
+assert_equal(total_points("jeff", 386814), 700)
+assert_equal(total_points("troy", 394382), 100)
+
+
+def count_comments(user_token: str, course_id: int) -> int:
+    """
+    This function produces an integer representing the number of comments across all the submissions for that course.
+    Args:
+        user_token (str): The user token of the user in question
+        course_id (int): The course ID
+
+    Returns:
+        int: The total number of comments across all the submission for the course
+    """
+
+    submissions = get_submissions(user_token, course_id)
+    total_comments = 0
+
+    for submission in submissions:
+        for comment in submission.comments:
+            total_comments += 1
+
+    return total_comments
+
+
+assert_equal(count_comments("annie", 679554), 14)
+assert_equal(count_comments("annie", 100167), 33)
+assert_equal(count_comments("troy", 394382), 0)
+
+
+def ratio_graded(user_token: str, course_id: int) -> str:
+    """
+    Produces a string value representing the number of assignments that have been graded compared to the number of
+    total assignments in the course.
+    Args:
+        user_token (str): The user token of the user in question
+        course_id (int): The course ID
+
+    Returns:
+        str: value representing the number of assignments that have been graded compared to the number of
+            total assignments in the course.
+    """
+
+    submissions = get_submissions(user_token, course_id)
+    total_assignments = 0
+    graded_assignments = 0
+
+    for submission in submissions:
+        total_assignments += 1
+        if submission.grade:
+            graded_assignments += 1
+
+    return f"{graded_assignments}/{total_assignments}"
+
+
+assert_equal(ratio_graded("annie", 679554), "10/10")
+assert_equal(ratio_graded("annie", 134088), "6/11")
+
+
+def average_score(user_token: str, course_id: id) -> float:
+    '''
+    Produces a float representing the average, unweighted score of all the assignments in the course.
+
+    Args:
+        user_token (str): The user token of the user in question
+        course_id (int): The course ID
+
+    Returns:
+        float: the average, unweighted score of all assignments in the course
+
+    '''
+
+    submissions = get_submissions(user_token, course_id)
+
+    total_possible = total_points(user_token, course_id)
+    graded_score = 0
+    for submission in submissions:
+        graded_score += submission.score
+
+    return graded_score / total_possible
+
+
+assert_equal(average_score('annie', 679554), 0.95)
+assert_equal(average_score('annie', 386814), 0.97)
+assert_equal(average_score('jeff', 386814), 0.7)
+
+
+def average_weighted(user_token: str, course_id: int) -> float:
+    '''
+    Produces a float representing the average, weighted score of all the assignments in the course.
+    Args:
+        user_token (str): The user token of the user in question
+        course_id (int): The course ID
+
+    Returns:
+        float: The average, weighted score of all the assignments in the course.
+
+        To calculate this, you will need to add up all the scores multiplied by the assignment weight,
+        then add up all the points possible for the graded submissions multiplied by the assignment weight,
+        and then divide the first total by the second total.
+
+        assignment weight is submission.assignment.group.weight
+    '''
+
+    submissions = get_submissions(user_token, course_id)
+
+    weighted_total = 0
+    for submission in submissions:
+        weighted_total += submission.assignment.points_possible * submission.assignment.group.weight
+
+    weighted_scored = 0
+    for submission in submissions:
+        weighted_scored += submission.score * submission.assignment.group.weight
+
+    return weighted_scored / weighted_total
+
+
+print(average_weighted('annie', 679554))
 
