@@ -243,7 +243,7 @@ assert_equal(ratio_graded("annie", 679554), "10/10")
 assert_equal(ratio_graded("annie", 134088), "6/11")
 
 
-def average_score(user_token: str, course_id: id) -> float:
+def average_score(user_token: str, course_id: int) -> float:
     """
     Produces a float representing the average, unweighted score of all the assignments in the course.
 
@@ -261,7 +261,8 @@ def average_score(user_token: str, course_id: id) -> float:
     total_possible = total_points(user_token, course_id)
     graded_score = 0
     for submission in submissions:
-        graded_score += submission.score
+        if submission.grade:
+            graded_score += submission.score
 
     return graded_score / total_possible
 
@@ -335,3 +336,50 @@ def average_group(user_token: str, course_id: int, group_name: str) -> float:
 
 assert_equal(average_group("annie", 679554, "HOMEWORK"), 0.9636363636363636)
 assert_equal(average_group("annie", 679554, "exam"), 0.935)
+
+
+def render_assignment(user_token: str, course_id: int, assignment_id: int) -> str:
+    '''
+    The function produces a string representing the assignment and its submission details.
+
+    Args:
+        user_token (str): The user token of the user in question
+        course_id (int): The course ID
+        assignment_id (int): The assignment ID
+
+    Returns:
+        str: A render of assignment ID, group name, module name, and grade
+            If no assignment found, returns 'Assignment not found'
+    '''
+
+    submissions = get_submissions(user_token, course_id)
+
+    assignment_name = ""
+    group_name = ""
+    module_name = ""
+    assignment_grade = ""
+    take = False
+
+    for submission in submissions:
+        if submission.assignment.id == assignment_id:
+            assignment_name = f"{submission.assignment.name}"
+            group_name = f"Group: {submission.assignment.group.name}"
+            module_name = f"Module: {submission.assignment.module}"
+            if submission.score:
+                assignment_grade = f"Grade: {submission.score}/{submission.assignment.points_possible} ({submission.grade})"
+            else:
+                assignment_grade = "Grade: (missing)"
+            take = True
+
+    if take:
+        return f"{assignment_id}: {assignment_name}\n{group_name}\n{module_name}\n{assignment_grade}"
+    else:
+        return f"Assignment not found: {assignment_id}"
+
+
+assert_equal(render_assignment('annie', 679554, 7), 'Assignment not found: 7')
+assert_equal(render_assignment('annie', 679554, 299650), '299650: Introduction\nGroup: Homework\nModule: Module 1\nGrade: 10.0/10 (A)')
+assert_equal(render_assignment('annie', 679554, 553716), '553716: Basic Addition\nGroup: Homework\nModule: Module 2\nGrade: 14.0/15 (A)')
+assert_equal(render_assignment('annie', 679554, 805499), '805499: Basic Subtraction\nGroup: Homework\nModule: Module 2\nGrade: 19.0/20 (A)')
+assert_equal(render_assignment('annie', 134088, 937202), '937202: Technology in the outdoor classroom\nGroup: Homework\nModule: Module 2\nGrade: (missing)')
+assert_equal(render_assignment('jeff', 386814, 24048), '24048: HOMEWORK 3\nGroup: Assignments\nModule: MODULE 1\nGrade: 58.0/100 (F)')
