@@ -302,3 +302,36 @@ assert_equal(average_weighted("annie", 679554), 0.9471153846153846)
 assert_equal(average_weighted("annie", 100167), 0.9750741839762611)
 assert_equal(average_weighted("annie", 134088), 0.93841059602649)
 assert_equal(average_weighted("jeff", 386814), 0.7)
+
+
+def average_group(user_token: str, course_id: int, group_name: str) -> float:
+    '''
+    The function returns a float representing the average, unweighted score for all the graded
+    submissions that have that group_name.
+    Args:
+        user_token (str): The user token of the user in question
+        course_id (int): The course ID
+        group_name (str): The name of the group
+
+    Returns:
+        float: the average, unweighted score for all the graded
+            submissions that have that group_name.
+    '''
+
+    group_name = group_name.capitalize()
+    submissions = get_submissions(user_token, course_id)
+    total_possible_points = 0
+    total_points_scored = 0
+    for submission in submissions:
+        if submission.grade and submission.assignment.group.name == group_name:
+            total_points_scored += submission.score
+            total_possible_points += submission.assignment.points_possible
+
+    if total_possible_points == 0:
+        return 0.0
+    else:
+        return total_points_scored / total_possible_points
+
+
+assert_equal(average_group('annie', 679554, 'HOMEWORK'), 0.9636363636363636)
+assert_equal(average_group('annie', 679554, 'exam'), 0.935)
