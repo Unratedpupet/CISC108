@@ -339,7 +339,7 @@ assert_equal(average_group("annie", 679554, "exam"), 0.935)
 
 
 def render_assignment(user_token: str, course_id: int, assignment_id: int) -> str:
-    '''
+    """
     The function produces a string representing the assignment and its submission details.
 
     Args:
@@ -350,7 +350,7 @@ def render_assignment(user_token: str, course_id: int, assignment_id: int) -> st
     Returns:
         str: A render of assignment ID, group name, module name, and grade
             If no assignment found, returns 'Assignment not found'
-    '''
+    """
 
     submissions = get_submissions(user_token, course_id)
 
@@ -377,9 +377,80 @@ def render_assignment(user_token: str, course_id: int, assignment_id: int) -> st
         return f"Assignment not found: {assignment_id}"
 
 
-assert_equal(render_assignment('annie', 679554, 7), 'Assignment not found: 7')
-assert_equal(render_assignment('annie', 679554, 299650), '299650: Introduction\nGroup: Homework\nModule: Module 1\nGrade: 10.0/10 (A)')
-assert_equal(render_assignment('annie', 679554, 553716), '553716: Basic Addition\nGroup: Homework\nModule: Module 2\nGrade: 14.0/15 (A)')
-assert_equal(render_assignment('annie', 679554, 805499), '805499: Basic Subtraction\nGroup: Homework\nModule: Module 2\nGrade: 19.0/20 (A)')
-assert_equal(render_assignment('annie', 134088, 937202), '937202: Technology in the outdoor classroom\nGroup: Homework\nModule: Module 2\nGrade: (missing)')
-assert_equal(render_assignment('jeff', 386814, 24048), '24048: HOMEWORK 3\nGroup: Assignments\nModule: MODULE 1\nGrade: 58.0/100 (F)')
+assert_equal(render_assignment("annie", 679554, 7), "Assignment not found: 7")
+assert_equal(
+    render_assignment("annie", 679554, 299650),
+    "299650: Introduction\nGroup: Homework\nModule: Module 1\nGrade: 10.0/10 (A)",
+)
+assert_equal(
+    render_assignment("annie", 679554, 553716),
+    "553716: Basic Addition\nGroup: Homework\nModule: Module 2\nGrade: 14.0/15 (A)",
+)
+assert_equal(
+    render_assignment("annie", 679554, 805499),
+    "805499: Basic Subtraction\nGroup: Homework\nModule: Module 2\nGrade: 19.0/20 (A)",
+)
+assert_equal(
+    render_assignment("annie", 134088, 937202),
+    "937202: Technology in the outdoor classroom\nGroup: Homework\nModule: Module 2\nGrade: (missing)",
+)
+assert_equal(
+    render_assignment("jeff", 386814, 24048),
+    "24048: HOMEWORK 3\nGroup: Assignments\nModule: MODULE 1\nGrade: 58.0/100 (F)",
+)
+
+
+def render_all(user_token: str, course_id: int) -> str:
+    """
+    Produces a single string that describes all the submissions in the course.
+    Args:
+        user_token (str): The user token of the user in question
+        course_id (int): The course ID
+
+    Returns:
+        str: A render of all the submission of the course
+
+    """
+
+    submissions = get_submissions(user_token, course_id)
+
+    all_submissions = ""
+    for submission in submissions:
+        if submission.grade:
+            all_submissions += (
+                f"{submission.assignment.id}: {submission.assignment.name} (graded)\n"
+            )
+        else:
+            all_submissions += (
+                f"{submission.assignment.id}: {submission.assignment.name} (ungraded)\n"
+            )
+
+    return all_submissions
+
+
+annie_render_679554 = (
+    "299650: Introduction (graded)\n"
+    "553716: Basic Addition (graded)\n"
+    "805499: Basic Subtraction (graded)\n"
+    "749969: Basic Multiplication (graded)\n"
+    "763866: Basic Division (graded)\n"
+    "979025: Midterm 1 (graded)\n"
+    "870878: Logarithms (graded)\n"
+    "126393: Antiderivatives (graded)\n"
+    "122494: Actual Sorcery (graded)\n"
+    "683132: Final Exam (graded)\n"
+)
+
+jeff_render_386814 = (
+    "806809: HOMEWORK 1 (graded)\n"
+    "212220: HOMEWORK 2 (graded)\n"
+    "24048: HOMEWORK 3 (graded)\n"
+    "982248: HOMEWORK 4 (graded)\n"
+    "269027: HOMEWORK 5 - COPY 1 (graded)\n"
+    "476501: HOMEWORK 7 (graded)\n"
+    "654144: HOMEWORK 8 FINAL (graded)\n"
+)
+
+
+assert_equal(render_all("annie", 679554), annie_render_679554)
+assert_equal(render_all("jeff", 386814), jeff_render_386814)
