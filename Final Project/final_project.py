@@ -244,7 +244,7 @@ assert_equal(ratio_graded("annie", 134088), "6/11")
 
 
 def average_score(user_token: str, course_id: id) -> float:
-    '''
+    """
     Produces a float representing the average, unweighted score of all the assignments in the course.
 
     Args:
@@ -254,7 +254,7 @@ def average_score(user_token: str, course_id: id) -> float:
     Returns:
         float: the average, unweighted score of all assignments in the course
 
-    '''
+    """
 
     submissions = get_submissions(user_token, course_id)
 
@@ -266,13 +266,13 @@ def average_score(user_token: str, course_id: id) -> float:
     return graded_score / total_possible
 
 
-assert_equal(average_score('annie', 679554), 0.95)
-assert_equal(average_score('annie', 386814), 0.97)
-assert_equal(average_score('jeff', 386814), 0.7)
+assert_equal(average_score("annie", 679554), 0.95)
+assert_equal(average_score("annie", 386814), 0.97)
+assert_equal(average_score("jeff", 386814), 0.7)
 
 
 def average_weighted(user_token: str, course_id: int) -> float:
-    '''
+    """
     Produces a float representing the average, weighted score of all the assignments in the course.
     Args:
         user_token (str): The user token of the user in question
@@ -280,26 +280,25 @@ def average_weighted(user_token: str, course_id: int) -> float:
 
     Returns:
         float: The average, weighted score of all the assignments in the course.
-
-        To calculate this, you will need to add up all the scores multiplied by the assignment weight,
-        then add up all the points possible for the graded submissions multiplied by the assignment weight,
-        and then divide the first total by the second total.
-
-        assignment weight is submission.assignment.group.weight
-    '''
+    """
 
     submissions = get_submissions(user_token, course_id)
 
     weighted_total = 0
-    for submission in submissions:
-        weighted_total += submission.assignment.points_possible * submission.assignment.group.weight
-
     weighted_scored = 0
+
     for submission in submissions:
-        weighted_scored += submission.score * submission.assignment.group.weight
+        if submission.grade:
+            weighted_total += (
+                submission.assignment.points_possible
+                * submission.assignment.group.weight
+            )
+            weighted_scored += submission.score * submission.assignment.group.weight
 
     return weighted_scored / weighted_total
 
 
-print(average_weighted('annie', 679554))
-
+assert_equal(average_weighted("annie", 679554), 0.9471153846153846)
+assert_equal(average_weighted("annie", 100167), 0.9750741839762611)
+assert_equal(average_weighted("annie", 134088), 0.93841059602649)
+assert_equal(average_weighted("jeff", 386814), 0.7)
