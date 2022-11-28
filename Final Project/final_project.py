@@ -575,3 +575,25 @@ def plot_points(user_token: str, course_id: int):
 plot_points("annie", 100167)
 plot_points("annie", 679554)
 plot_points("annie", 386814)
+
+
+'''
+A running sum line of the maximum weighted points possible in the course (max_points).
+A running sum line of the maximum possible weighted score in the course (max_score).
+A running sum line of the minimum possible weighted score in the course (min_score).
+
+If all assignments in the course were already graded, then the max_score and min_score lines would be the same; 
+otherwise, the two lines show what happens if you scored perfect 100%s (max_score) and 0%s (min_score) on 
+each assignment. Similarly, if you scored perfectly on every assignment in the entire course, then the max_points 
+line would match exactly to the max_score line.
+
+All of the lines need to be weighted appropriately, which means you will need to begin by calculating the total 
+weighted points before the running sum lists (similar to the previous problem). The final result should 
+have the values 0 to 100 on the Y-axis (representing the course grade), and each assignment on the X-axis.
+
+Define a function predict_grades that consumes a user_token (a string) and a course_id (an integer) and returns 
+nothing but creates a graph with the three running sums as described above. 
+'''
+
+def predict_grades(user_token: str, course_id: int):
+    pass
