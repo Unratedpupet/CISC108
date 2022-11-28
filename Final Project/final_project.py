@@ -528,6 +528,50 @@ def days_apart(first_date: str, second_date: str) -> int:
     return difference.days
 
 
-plot_earliness("annie", 100167)
-plot_earliness("abed", 100167)
-plot_earliness("jeff", 100167)
+# plot_earliness("annie", 100167)
+# plot_earliness("abed", 100167)
+# plot_earliness("jeff", 100167)
+
+
+def plot_points(user_token: str, course_id: int):
+    """
+    Creates a graph comparing the points possible for each assignment with the weighted
+        points possible for that assignment
+    Args:
+        user_token (str): The user token of the user in question
+        course_id (int): The course ID
+
+    Returns:
+        Returns nothing, but creates a graph comparing the weighted points possible for each assignment.
+    """
+
+    submissions = get_submissions(user_token, course_id)
+    total_weighted_points = 0
+    weighted_assignment_points = []
+    possible_points = []
+    for submission in submissions:
+        total_weighted_points += (
+            submission.assignment.points_possible * submission.assignment.group.weight
+        )
+        weighted_assignment_points.append(
+            submission.assignment.points_possible * submission.assignment.group.weight
+        )
+        possible_points.append(submission.assignment.points_possible)
+    total_weighted_points = total_weighted_points / 100
+
+    if not total_weighted_points:
+        return
+
+    for index, score in enumerate(weighted_assignment_points):
+        weighted_assignment_points[index] = score / total_weighted_points
+
+    plt.scatter(possible_points, weighted_assignment_points)
+    plt.title("Weighted assignment points")
+    plt.ylabel("Weighted points possible")
+    plt.xlabel("Assignment Weighted Points")
+    plt.show()
+
+
+plot_points("annie", 100167)
+plot_points("annie", 679554)
+plot_points("annie", 386814)
