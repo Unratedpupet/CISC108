@@ -1,8 +1,9 @@
 from bakery_canvas import get_courses, get_submissions
 from bakery import assert_equal
+import matplotlib.pyplot as plt
 import sys
 
-my_token = sys.argv[1]
+# my_token = sys.argv[1]
 
 
 def count_courses(user_token: str) -> int:
@@ -454,3 +455,34 @@ jeff_render_386814 = (
 
 assert_equal(render_all("annie", 679554), annie_render_679554)
 assert_equal(render_all("jeff", 386814), jeff_render_386814)
+
+
+def plot_scores(user_token: str, course_id: int):
+    """
+    Creates a graph representing the distribution of the fractional scores in the course.
+    Args:
+        user_token (str): The user token of the user in question
+        course_id (int): The course ID
+
+    Returns:
+        No return, but creates a distribution plot of the fractional scores of the course.
+    """
+    submissions = get_submissions(user_token, course_id)
+
+    fractional_scores = []
+    for submission in submissions:
+        if submission.score and submission.assignment.points_possible != 0:
+            fractional_scores.append(
+                (submission.score / submission.assignment.points_possible) * 100
+            )
+
+    plt.hist(fractional_scores)
+    plt.title("Fractional Scores")
+    plt.ylabel("Total Points")
+    plt.xlabel("Assignment Scores")
+    plt.show()
+
+
+# plot_scores('annie', 100167)
+# plot_scores('abed', 100167)
+# plot_scores('jeff', 100167)
