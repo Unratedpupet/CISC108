@@ -1,6 +1,7 @@
 from bakery_canvas import get_courses, get_submissions
 from bakery import assert_equal
 import matplotlib.pyplot as plt
+from datetime import datetime
 import sys
 
 # my_token = sys.argv[1]
@@ -486,3 +487,47 @@ def plot_scores(user_token: str, course_id: int):
 # plot_scores('annie', 100167)
 # plot_scores('abed', 100167)
 # plot_scores('jeff', 100167)
+
+
+def plot_earliness(user_token: str, course_id: int):
+    """
+    Creates a graph representing the distribution of the lateness of each submission.
+    Args:
+        user_token (str): The user token of the user in question
+        course_id (int): The course ID
+
+    Returns:
+        Returns nothing but creates a distribution plot of the lateness of each submission.
+    """
+
+    late_assignments = []
+
+    submissions = get_submissions(user_token, course_id)
+
+    for submission in submissions:
+        if submission.submitted_at and submission.assignment.due_at:
+            late_assignments.append(
+                days_apart(submission.submitted_at, submission.assignment.due_at)
+            )
+
+    plt.hist(late_assignments)
+    plt.title("Earliness Assignments")
+    plt.ylabel("Number of late assignments")
+    plt.xlabel("Assignment Lateness")
+    plt.show()
+
+
+def days_apart(first_date: str, second_date: str) -> int:
+    """
+    Determines the days between `first` and `second` date.
+    Do not modify this function!
+    """
+    first_date = datetime.strptime(first_date, "%Y-%m-%dT%H:%M:%S%z")
+    second_date = datetime.strptime(second_date, "%Y-%m-%dT%H:%M:%S%z")
+    difference = second_date - first_date
+    return difference.days
+
+
+plot_earliness("annie", 100167)
+plot_earliness("abed", 100167)
+plot_earliness("jeff", 100167)
