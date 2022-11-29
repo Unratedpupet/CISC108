@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 import sys
 
-# my_token = sys.argv[1]
+my_token = sys.argv[1]
 
 
 def count_courses(user_token: str) -> int:
@@ -117,51 +117,6 @@ assert_equal(render_courses("annie"), annie_courses)
 assert_equal(render_courses("jeff"), jeff_courses)
 assert_equal(render_courses("pierce"), pierce_courses)
 assert_equal(render_courses("troy"), troy_courses)
-
-
-def execute(command: str, user_token: str, course_id: int) -> int:
-    """
-
-    Args:
-        command (str): The command that is inputted to choose what to do.
-        user_token (str): The user that is being requested.
-        course_id (int): The course ID
-
-    Returns:
-        int: The new course ID or the course ID that was passed in.
-    """
-    # Prints out the courses being taken by the user currently.
-    print(render_courses(user_token))
-
-    if command == "course":
-        course_id = int(input("Please input a course ID: "))
-        print(find_course(user_token, course_id))
-        return course_id
-    elif command == "exit":
-        return 0
-    else:
-        return course_id
-
-
-def main(user_token: str):
-    """
-    The main function that runs the commands
-    Args:
-        user_token (str): The user id of the user looking for data.
-
-    Returns:
-        None
-    """
-    if count_courses(user_token) == 0:
-        print("No courses available")
-
-    current_course_id = find_cs1(user_token)
-    if current_course_id == 0:
-        current_course_id = 1
-
-    while current_course_id > 0:
-        user_command = input("What would you like to do?\ncourse\nexit\nChoose: ")
-        current_course_id = execute(user_command, user_token, current_course_id)
 
 
 def total_points(user_token: str, course_id: int) -> int:
@@ -655,11 +610,116 @@ def get_total_weighted(submissions: list[Submission]) -> float:
     return total_weighted_points / 100
 
 
-print("Introduction to Computer Science")
-predict_grades("annie", 100167)
-predict_grades("abed", 100167)
-predict_grades("jeff", 100167)
-print("Physical Education Education")
-predict_grades("annie", 134088)
-predict_grades("abed", 134088)
-predict_grades("jeff", 134088)
+# print("Introduction to Computer Science")
+# predict_grades("annie", 100167)
+# predict_grades("abed", 100167)
+# predict_grades("jeff", 100167)
+# print("Physical Education Education")
+# predict_grades("annie", 134088)
+# predict_grades("abed", 134088)
+# predict_grades("jeff", 134088)
+
+def execute(command: str, user_token: str, course_id: int) -> int:
+    """
+
+    Args:
+        command (str): The command that is inputted to choose what to do.
+        user_token (str): The user that is being requested.
+        course_id (int): The course ID
+
+    Returns:
+        int: The new course ID or the course ID that was passed in.
+    """
+
+    if command == "exit":
+        return 0
+    elif command == "help":
+        print("""
+            exit > Exit the application
+            help > List all the commands
+            course > Change current course
+            points > Print total points in course
+            comments > Print how many comments in course
+            graded > Print ratio of ungraded/graded assignments
+            score_unweighted > Print average unweighted score
+            score > Print average weighted score
+            group > Print average of assignment group, by name
+            assignment > Print the details of a specific assignment, by ID
+            list > List all the assignments in the course
+            scores > Plot the distribution of grades in the course
+            earliness > Plot the distribution of the days assignments were submitted early
+            compare > Plot the relationship between assignments' points possible and their weighted points possible
+            predict > Plot the trends in grades over assignments, showing max ever possible, max still possible, 
+                and minimum still possible
+        """)
+        return course_id
+    elif command == "course":
+        # Prints out the courses being taken by the user currently.
+        print(render_courses(user_token))
+        print(find_course(user_token, course_id))
+        course_id = int(input("Please input a course ID: "))
+        return course_id
+    elif command == "points":
+        print(total_points(user_token, course_id))
+        return course_id
+    elif command == "comments":
+        print(count_comments(user_token, course_id))
+        return course_id
+    elif command == "graded":
+        print(ratio_graded(user_token, course_id))
+        return course_id
+    elif command == "score_unweighted":
+        print(average_score(user_token, course_id))
+        return course_id
+    elif command == "score":
+        print(average_weighted(user_token, course_id))
+        return course_id
+    elif command == "group":
+        group_name = input("What is the group name? ")
+        print(average_group(user_token, course_id, group_name))
+        return course_id
+    elif command == "assignment":
+        assignment_id = int(input("What is the assignment ID? "))
+        print(render_assignment(user_token, course_id, assignment_id))
+        return course_id
+    elif command == "list":
+        print(render_all(user_token, course_id))
+        return course_id
+    elif command == "scores":
+        plot_scores(user_token, course_id)
+        return course_id
+    elif command == "earliness":
+        plot_earliness(user_token, course_id)
+        return course_id
+    elif command == "compare":
+        plot_points(user_token, course_id)
+        return course_id
+    elif command == "predict":
+        predict_grades(user_token, course_id)
+        return course_id
+    else:
+        return course_id
+
+
+def main(user_token: str):
+    """
+    The main function that runs the commands
+    Args:
+        user_token (str): The user id of the user looking for data.
+
+    Returns:
+        None
+    """
+    if count_courses(user_token) == 0:
+        print("No courses available")
+
+    current_course_id = find_cs1(user_token)
+    if current_course_id == 0:
+        current_course_id = 1
+
+    while current_course_id > 0:
+        user_command = input("What would you like to do?\ncourse\nexit\nhelp\nChoose: ").lower()
+        current_course_id = execute(user_command, user_token, current_course_id)
+
+
+main(my_token)
