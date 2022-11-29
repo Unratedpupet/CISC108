@@ -1,4 +1,4 @@
-from bakery_canvas import get_courses, get_submissions
+from bakery_canvas import get_courses, get_submissions, Submission
 from bakery import assert_equal
 import matplotlib.pyplot as plt
 from datetime import datetime
@@ -546,18 +546,14 @@ def plot_points(user_token: str, course_id: int):
     """
 
     submissions = get_submissions(user_token, course_id)
-    total_weighted_points = 0
+    total_weighted_points = get_total_weighted(submissions)
     weighted_assignment_points = []
     possible_points = []
     for submission in submissions:
-        total_weighted_points += (
-            submission.assignment.points_possible * submission.assignment.group.weight
-        )
         weighted_assignment_points.append(
             submission.assignment.points_possible * submission.assignment.group.weight
         )
         possible_points.append(submission.assignment.points_possible)
-    total_weighted_points = total_weighted_points / 100
 
     if not total_weighted_points:
         return
@@ -572,28 +568,98 @@ def plot_points(user_token: str, course_id: int):
     plt.show()
 
 
-plot_points("annie", 100167)
-plot_points("annie", 679554)
-plot_points("annie", 386814)
+# plot_points("annie", 100167)
+# plot_points("annie", 679554)
+# plot_points("annie", 386814)
 
-
-'''
-A running sum line of the maximum weighted points possible in the course (max_points).
-A running sum line of the maximum possible weighted score in the course (max_score).
-A running sum line of the minimum possible weighted score in the course (min_score).
-
-If all assignments in the course were already graded, then the max_score and min_score lines would be the same; 
-otherwise, the two lines show what happens if you scored perfect 100%s (max_score) and 0%s (min_score) on 
-each assignment. Similarly, if you scored perfectly on every assignment in the entire course, then the max_points 
-line would match exactly to the max_score line.
-
-All of the lines need to be weighted appropriately, which means you will need to begin by calculating the total 
-weighted points before the running sum lists (similar to the previous problem). The final result should 
-have the values 0 to 100 on the Y-axis (representing the course grade), and each assignment on the X-axis.
-
-Define a function predict_grades that consumes a user_token (a string) and a course_id (an integer) and returns 
-nothing but creates a graph with the three running sums as described above. 
-'''
 
 def predict_grades(user_token: str, course_id: int):
-    pass
+    """
+    This function creates a graph with three sum lines to predict the final grade
+    Args:
+        user_token (str): The user token of the user in question
+        course_id (int): The course ID
+
+    Returns:
+        Returns nothing but creates a graph with the three sum lines
+    """
+
+    submissions = get_submissions(user_token, course_id)
+
+    max_points = []
+    max_score = []
+    min_score = []
+    max_points_sum = 0
+    max_score_sum = 0
+    min_score_sum = 0
+
+    total_weighted_points = get_total_weighted(submissions)
+
+    for submission in submissions:
+        max_points_sum += (
+            submission.assignment.points_possible
+            * submission.assignment.group.weight
+            / total_weighted_points
+        )
+        max_points.append(max_points_sum)
+
+        if not submission.score:
+            min_score.append(min_score_sum)
+        else:
+            min_score_sum += (
+                submission.score
+                * submission.assignment.group.weight
+                / total_weighted_points
+            )
+            min_score.append(min_score_sum)
+        if not submission.score:
+            max_score_sum += (
+                submission.assignment.points_possible
+                * submission.assignment.group.weight
+                / total_weighted_points
+            )
+            max_score.append(max_score_sum)
+        else:
+            max_score_sum += (
+                submission.score
+                * submission.assignment.group.weight
+                / total_weighted_points
+            )
+            max_score.append(max_score_sum)
+
+    plt.plot(max_points)
+    plt.plot(max_score)
+    plt.plot(min_score)
+
+    plt.title("Predict Grade")
+    plt.xlabel("Assignment")
+    plt.ylabel("Course Grade")
+    plt.show()
+
+
+def get_total_weighted(submissions: list[Submission]) -> float:
+    """
+    This is a helper function to get the total weighted points for a list of submission.
+    Args:
+        submissions list[Submission]: A list of submissions from a user_token and course_id
+
+    Returns:
+        float: The total weighted points from a list of submissions.
+    """
+    total_weighted_points = 0
+    for submission in submissions:
+        total_weighted_points += (
+            submission.assignment.points_possible * submission.assignment.group.weight
+        )
+
+    return total_weighted_points / 100
+
+
+print("Introduction to Computer Science")
+predict_grades("annie", 100167)
+predict_grades("abed", 100167)
+predict_grades("jeff", 100167)
+print("Physical Education Education")
+predict_grades("annie", 134088)
+predict_grades("abed", 134088)
+predict_grades("jeff", 134088)
