@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 import sys
 
-my_token = sys.argv[1]
+# my_token = sys.argv[1]
 
 
 def count_courses(user_token: str) -> int:
@@ -24,10 +24,10 @@ def count_courses(user_token: str) -> int:
     return count
 
 
-assert_equal(count_courses("annie"), 6)
-assert_equal(count_courses("jeff"), 6)
-assert_equal(count_courses("pierce"), 0)
-assert_equal(count_courses("troy"), 1)
+# assert_equal(count_courses("annie"), 6)
+# assert_equal(count_courses("jeff"), 6)
+# assert_equal(count_courses("pierce"), 0)
+# assert_equal(count_courses("troy"), 1)
 
 
 def find_cs1(user_token: str) -> int:
@@ -53,10 +53,10 @@ def find_cs1(user_token: str) -> int:
     return course_id
 
 
-assert_equal(find_cs1("annie"), 100167)
-assert_equal(find_cs1("jeff"), 100167)
-assert_equal(find_cs1("pierce"), 0)
-assert_equal(find_cs1("troy"), 0)
+# assert_equal(find_cs1("annie"), 100167)
+# assert_equal(find_cs1("jeff"), 100167)
+# assert_equal(find_cs1("pierce"), 0)
+# assert_equal(find_cs1("troy"), 0)
 
 
 def find_course(user_token: str, course_id: int) -> str:
@@ -80,10 +80,10 @@ def find_course(user_token: str, course_id: int) -> str:
     return course_name
 
 
-assert_equal(find_course("annie", 394382), "History of Ice Cream")
-assert_equal(find_course("jeff", 134088), "Physical Education Education")
-assert_equal(find_course("pierce", 12345), "no course found")
-assert_equal(find_course("troy", 394382), "History of Ice Cream")
+# assert_equal(find_course("annie", 394382), "History of Ice Cream")
+# assert_equal(find_course("jeff", 134088), "Physical Education Education")
+# assert_equal(find_course("pierce", 12345), "no course found")
+# assert_equal(find_course("troy", 394382), "History of Ice Cream")
 
 
 def render_courses(user_token: str) -> str:
@@ -113,10 +113,10 @@ pierce_courses = ""
 
 troy_courses = "394382: ICRM304\n"
 
-assert_equal(render_courses("annie"), annie_courses)
-assert_equal(render_courses("jeff"), jeff_courses)
-assert_equal(render_courses("pierce"), pierce_courses)
-assert_equal(render_courses("troy"), troy_courses)
+# assert_equal(render_courses("annie"), annie_courses)
+# assert_equal(render_courses("jeff"), jeff_courses)
+# assert_equal(render_courses("pierce"), pierce_courses)
+# assert_equal(render_courses("troy"), troy_courses)
 
 
 def total_points(user_token: str, course_id: int) -> int:
@@ -137,12 +137,12 @@ def total_points(user_token: str, course_id: int) -> int:
     return possible_points
 
 
-assert_equal(total_points("annie", 679554), 420)
-assert_equal(total_points("annie", 386814), 700)
-assert_equal(total_points("annie", 100167), 1060)
-assert_equal(total_points("jeff", 679554), 420)
-assert_equal(total_points("jeff", 386814), 700)
-assert_equal(total_points("troy", 394382), 100)
+# assert_equal(total_points("annie", 679554), 420)
+# assert_equal(total_points("annie", 386814), 700)
+# assert_equal(total_points("annie", 100167), 1060)
+# assert_equal(total_points("jeff", 679554), 420)
+# assert_equal(total_points("jeff", 386814), 700)
+# assert_equal(total_points("troy", 394382), 100)
 
 
 def count_comments(user_token: str, course_id: int) -> int:
@@ -166,9 +166,9 @@ def count_comments(user_token: str, course_id: int) -> int:
     return total_comments
 
 
-assert_equal(count_comments("annie", 679554), 14)
-assert_equal(count_comments("annie", 100167), 33)
-assert_equal(count_comments("troy", 394382), 0)
+# assert_equal(count_comments("annie", 679554), 14)
+# assert_equal(count_comments("annie", 100167), 33)
+# assert_equal(count_comments("troy", 394382), 0)
 
 
 def ratio_graded(user_token: str, course_id: int) -> str:
@@ -196,13 +196,13 @@ def ratio_graded(user_token: str, course_id: int) -> str:
     return f"{graded_assignments}/{total_assignments}"
 
 
-assert_equal(ratio_graded("annie", 679554), "10/10")
-assert_equal(ratio_graded("annie", 134088), "6/11")
+# assert_equal(ratio_graded("annie", 679554), "10/10")
+# assert_equal(ratio_graded("annie", 134088), "6/11")
 
 
 def average_score(user_token: str, course_id: int) -> float:
     """
-    Produces a float representing the average, unweighted score of all the assignments in the course.
+    Produces a float representing the average, unweighted score of all the graded assignments in the course.
 
     Args:
         user_token (str): The user token of the user in question
@@ -215,18 +215,19 @@ def average_score(user_token: str, course_id: int) -> float:
 
     submissions = get_submissions(user_token, course_id)
 
-    total_possible = total_points(user_token, course_id)
+    total_possible = 0
     graded_score = 0
     for submission in submissions:
         if submission.grade:
             graded_score += submission.score
+            total_possible += submission.assignment.points_possible
 
     return graded_score / total_possible
 
 
-assert_equal(average_score("annie", 679554), 0.95)
-assert_equal(average_score("annie", 386814), 0.97)
-assert_equal(average_score("jeff", 386814), 0.7)
+# assert_equal(average_score("annie", 679554), 0.95)
+# assert_equal(average_score("annie", 386814), 0.97)
+# assert_equal(average_score("jeff", 386814), 0.7)
 
 
 def average_weighted(user_token: str, course_id: int) -> float:
@@ -256,10 +257,10 @@ def average_weighted(user_token: str, course_id: int) -> float:
     return weighted_scored / weighted_total
 
 
-assert_equal(average_weighted("annie", 679554), 0.9471153846153846)
-assert_equal(average_weighted("annie", 100167), 0.9750741839762611)
-assert_equal(average_weighted("annie", 134088), 0.93841059602649)
-assert_equal(average_weighted("jeff", 386814), 0.7)
+# assert_equal(average_weighted("annie", 679554), 0.9471153846153846)
+# assert_equal(average_weighted("annie", 100167), 0.9750741839762611)
+# assert_equal(average_weighted("annie", 134088), 0.93841059602649)
+# assert_equal(average_weighted("jeff", 386814), 0.7)
 
 
 def average_group(user_token: str, course_id: int, group_name: str) -> float:
@@ -291,8 +292,8 @@ def average_group(user_token: str, course_id: int, group_name: str) -> float:
         return total_points_scored / total_possible_points
 
 
-assert_equal(average_group("annie", 679554, "HOMEWORK"), 0.9636363636363636)
-assert_equal(average_group("annie", 679554, "exam"), 0.935)
+# assert_equal(average_group("annie", 679554, "HOMEWORK"), 0.9636363636363636)
+# assert_equal(average_group("annie", 679554, "exam"), 0.935)
 
 
 def render_assignment(user_token: str, course_id: int, assignment_id: int) -> str:
@@ -334,27 +335,27 @@ def render_assignment(user_token: str, course_id: int, assignment_id: int) -> st
         return f"Assignment not found: {assignment_id}"
 
 
-assert_equal(render_assignment("annie", 679554, 7), "Assignment not found: 7")
-assert_equal(
-    render_assignment("annie", 679554, 299650),
-    "299650: Introduction\nGroup: Homework\nModule: Module 1\nGrade: 10.0/10 (A)",
-)
-assert_equal(
-    render_assignment("annie", 679554, 553716),
-    "553716: Basic Addition\nGroup: Homework\nModule: Module 2\nGrade: 14.0/15 (A)",
-)
-assert_equal(
-    render_assignment("annie", 679554, 805499),
-    "805499: Basic Subtraction\nGroup: Homework\nModule: Module 2\nGrade: 19.0/20 (A)",
-)
-assert_equal(
-    render_assignment("annie", 134088, 937202),
-    "937202: Technology in the outdoor classroom\nGroup: Homework\nModule: Module 2\nGrade: (missing)",
-)
-assert_equal(
-    render_assignment("jeff", 386814, 24048),
-    "24048: HOMEWORK 3\nGroup: Assignments\nModule: MODULE 1\nGrade: 58.0/100 (F)",
-)
+# assert_equal(render_assignment("annie", 679554, 7), "Assignment not found: 7")
+# assert_equal(
+#     render_assignment("annie", 679554, 299650),
+#     "299650: Introduction\nGroup: Homework\nModule: Module 1\nGrade: 10.0/10 (A)",
+# )
+# assert_equal(
+#     render_assignment("annie", 679554, 553716),
+#     "553716: Basic Addition\nGroup: Homework\nModule: Module 2\nGrade: 14.0/15 (A)",
+# )
+# assert_equal(
+#     render_assignment("annie", 679554, 805499),
+#     "805499: Basic Subtraction\nGroup: Homework\nModule: Module 2\nGrade: 19.0/20 (A)",
+# )
+# assert_equal(
+#     render_assignment("annie", 134088, 937202),
+#     "937202: Technology in the outdoor classroom\nGroup: Homework\nModule: Module 2\nGrade: (missing)",
+# )
+# assert_equal(
+#     render_assignment("jeff", 386814, 24048),
+#     "24048: HOMEWORK 3\nGroup: Assignments\nModule: MODULE 1\nGrade: 58.0/100 (F)",
+# )
 
 
 def render_all(user_token: str, course_id: int) -> str:
@@ -409,8 +410,8 @@ jeff_render_386814 = (
 )
 
 
-assert_equal(render_all("annie", 679554), annie_render_679554)
-assert_equal(render_all("jeff", 386814), jeff_render_386814)
+# assert_equal(render_all("annie", 679554), annie_render_679554)
+# assert_equal(render_all("jeff", 386814), jeff_render_386814)
 
 
 def plot_scores(user_token: str, course_id: int):
@@ -630,6 +631,8 @@ def execute(command: str, user_token: str, course_id: int) -> int:
     Returns:
         int: The new course ID or the course ID that was passed in.
     """
+    # Prints out the courses being taken by the user currently.
+    print(render_courses(user_token))
 
     if command == "exit":
         return 0
@@ -654,10 +657,8 @@ def execute(command: str, user_token: str, course_id: int) -> int:
         """)
         return course_id
     elif command == "course":
-        # Prints out the courses being taken by the user currently.
-        print(render_courses(user_token))
-        print(find_course(user_token, course_id))
         course_id = int(input("Please input a course ID: "))
+        print(find_course(user_token, course_id))
         return course_id
     elif command == "points":
         print(total_points(user_token, course_id))
@@ -722,4 +723,5 @@ def main(user_token: str):
         current_course_id = execute(user_command, user_token, current_course_id)
 
 
-main(my_token)
+# main("jeff")
+print(average_score("jeff", 100167))
