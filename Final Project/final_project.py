@@ -732,10 +732,10 @@ def main(user_token: str):
 if __name__ == "__main__":
     # This only works with my interpreter settings due to the
     try:
-        my_user_token = sys.argv[1]
+        my_user_token = sys.argv[2]
         main(my_user_token)
     except IndexError:
         main_user_token = input(
             "Please enter a valid user_token: 'annie', 'jeff', 'troy', ect...: "
-        )
+        ).lower()
         main(main_user_token)
